@@ -386,18 +386,16 @@ def main():
         st.error(f"Categories file not found: {CATEGORIES_CSV}")
         st.stop()
 
-    # Sidebar: debug + reset
-    st.sidebar.header("Status")
+    # Sidebar
+    st.sidebar.header("Info")
     st.sidebar.metric("Product Categories", len(cat_dict))
-    st.sidebar.caption(f"Session keys: {list(st.session_state.keys())}")
     if st.sidebar.button("Reset (new file)"):
         st.session_state.clear()
         st.rerun()
 
-    # --- Step 1: Upload ---
-    st.header("1. Upload Sitemap")
+    # --- Upload ---
     uploaded = st.file_uploader(
-        "Drop a sitemap Excel file here (column A = URLs)",
+        "Drop a sitemap Excel file here",
         type=["xlsx", "xls"],
     )
 
@@ -408,92 +406,90 @@ def main():
         st.session_state["country_lang"] = f"{country}-{lang}" if country else "unknown"
 
     if "old_urls" not in st.session_state:
-        st.info("Upload a sitemap Excel file to get started.")
         return
 
     old_urls = st.session_state["old_urls"]
     cl = st.session_state.get("country_lang", "unknown")
-    st.success(f"{len(old_urls)} URLs loaded (detected: **{cl}**)")
 
-    # --- Step 2: Generate Mappings ---
-    st.header("2. Generate New URLs")
-    if st.button("Generate URL Mappings", type="primary"):
+    # --- Generate (auto-run once after upload) ---
+    if "new_urls" not in st.session_state:
         st.session_state["new_urls"] = [build_new_url(u, cat_dict) for u in old_urls]
 
-    if "new_urls" not in st.session_state:
-        return
-
     new_urls = st.session_state["new_urls"]
-    empty_count = sum(1 for u in new_urls if not u)
-    col1, col2 = st.columns(2)
-    col1.metric("URLs mapped", len(new_urls))
-    col2.metric("Failed to map", empty_count)
 
-    with st.expander("Preview (first 50 rows)", expanded=False):
-        preview_df = pd.DataFrame(
-            {"Old URL": old_urls[:50], "New URL": new_urls[:50]}
+    # --- Compact summary ---
+    st.markdown(f"**{cl.upper()}** | {len(old_urls)} URLs loaded | {len(new_urls)} mapped")
+
+    with st.expander("Preview mapping (first 50)", expanded=False):
+        st.dataframe(
+            pd.DataFrame({"OW URL": old_urls[:50], "DEP URL": new_urls[:50]}),
+            use_container_width=True,
         )
-        st.dataframe(preview_df, use_container_width=True)
 
-    # --- Step 3: HTTP Checks ---
-    st.header("3. HTTP Status Checks")
+    # --- HTTP Checks ---
+    st.divider()
+    checks_done = "ow_statuses" in st.session_state and "dep_statuses" in st.session_state
 
-    col_a, col_b = st.columns(2)
+    if st.button("Run HTTP Checks (OW + DEP)", type="primary", disabled=checks_done):
+        bar = st.progress(0, text="Checking OW URLs...")
+        st.session_state["ow_statuses"] = run_checks(
+            old_urls, follow_redirects=True, progress_bar=bar
+        )
+        bar.progress(0.5, text="Checking DEP URLs...")
+        st.session_state["dep_statuses"] = run_checks(
+            new_urls, follow_redirects=False, progress_bar=bar
+        )
+        bar.progress(1.0, text="All checks complete!")
+        # Clear stale caches
+        for key in ("ow_errors_xlsx", "dep_errors_xlsx", "mapping_xlsx"):
+            st.session_state.pop(key, None)
 
-    with col_a:
-        st.subheader("OW URLs (follow redirects)")
-        if st.button("Check OW URLs"):
-            bar = st.progress(0, text="Checking OW URLs...")
-            st.session_state["ow_statuses"] = run_checks(
-                old_urls, follow_redirects=True, progress_bar=bar
-            )
-            bar.progress(1.0, text="OW check complete!")
-
-        if "ow_statuses" in st.session_state:
-            ow = st.session_state["ow_statuses"]
-            ok_count = sum(1 for c, _ in ow.values() if 200 <= c <= 299)
-            err_count = sum(1 for c, _ in ow.values() if c == 404)
-            st.metric("OK", ok_count)
-            st.metric("404", err_count)
-
-    with col_b:
-        st.subheader("DEP URLs (no redirects)")
-        if st.button("Check DEP URLs"):
-            bar = st.progress(0, text="Checking DEP URLs...")
-            st.session_state["dep_statuses"] = run_checks(
-                new_urls, follow_redirects=False, progress_bar=bar
-            )
-            bar.progress(1.0, text="DEP check complete!")
-
-        if "dep_statuses" in st.session_state:
-            dep = st.session_state["dep_statuses"]
-            ok_count = sum(1 for c, _ in dep.values() if 200 <= c <= 299)
-            redir_count = sum(1 for c, _ in dep.values() if 300 <= c <= 399)
-            st.metric("OK", ok_count)
-            st.metric("Redirect", redir_count)
-
-    # --- Step 4: Fix DEP 404 Errors ---
-    if "dep_statuses" in st.session_state:
+    if checks_done:
+        ow = st.session_state["ow_statuses"]
         dep = st.session_state["dep_statuses"]
 
-        # Build list of 404 errors with their corresponding old URLs
+        ow_ok = sum(1 for c, _ in ow.values() if 200 <= c <= 299)
+        ow_404 = sum(1 for c, _ in ow.values() if c == 404)
+        dep_ok = sum(1 for c, _ in dep.values() if 200 <= c <= 299)
+        dep_redir = sum(1 for c, _ in dep.values() if 300 <= c <= 399)
+        dep_404 = sum(1 for c, _ in dep.values() if c == 404)
+
+        col1, col2, col3, col4, col5 = st.columns(5)
+        col1.metric("OW OK", ow_ok)
+        col2.metric("OW 404", ow_404)
+        col3.metric("DEP OK", dep_ok)
+        col4.metric("DEP Redirect", dep_redir)
+        col5.metric("DEP 404", dep_404)
+
+        if st.button("Re-run checks"):
+            for key in ("ow_statuses", "dep_statuses", "ow_errors_xlsx", "dep_errors_xlsx", "mapping_xlsx"):
+                st.session_state.pop(key, None)
+            st.rerun()
+
+    # --- Fix DEP 404 Errors ---
+    if "dep_statuses" in st.session_state:
+        dep = st.session_state["dep_statuses"]
         error_rows = []
         for idx, (old, new) in enumerate(zip(old_urls, new_urls)):
             code, _err = dep.get(new, (-1, ""))
             if code == 404:
-                error_rows.append({"index": idx, "OW URL": old, "DEP URL (404)": new, "New DEP URL": new})
+                error_rows.append({
+                    "index": idx, "OW URL": old,
+                    "DEP URL (404)": new, "New DEP URL": new,
+                })
 
         if error_rows:
-            st.header("4. Fix DEP 404 Errors")
-            st.warning(f"**{len(error_rows)}** DEP URLs returned 404. Edit the 'New DEP URL' column to fix them.")
+            st.divider()
+            st.subheader(f"Fix {len(error_rows)} DEP 404 Errors")
+            st.caption("Edit the 'New DEP URL' column, then click Apply.")
 
             error_df = pd.DataFrame(error_rows)
             edited_df = st.data_editor(
                 error_df[["OW URL", "DEP URL (404)", "New DEP URL"]],
                 column_config={
-                    "OW URL": st.column_config.TextColumn("OW URL", disabled=True, width="large"),
-                    "DEP URL (404)": st.column_config.TextColumn("DEP URL (404)", disabled=True, width="large"),
-                    "New DEP URL": st.column_config.TextColumn("New DEP URL", width="large"),
+                    "OW URL": st.column_config.TextColumn(disabled=True, width="large"),
+                    "DEP URL (404)": st.column_config.TextColumn(disabled=True, width="large"),
+                    "New DEP URL": st.column_config.TextColumn(width="large"),
                 },
                 use_container_width=True,
                 num_rows="fixed",
@@ -501,70 +497,64 @@ def main():
             )
 
             if st.button("Apply Fixes", type="primary"):
-                # Merge edits back into new_urls
                 updated_urls = list(new_urls)
                 for i, row in enumerate(error_rows):
                     new_val = edited_df.iloc[i]["New DEP URL"]
                     if new_val and new_val != row["DEP URL (404)"]:
                         updated_urls[row["index"]] = new_val
                 st.session_state["new_urls"] = updated_urls
-                # Clear stale caches
                 for key in ("dep_statuses", "dep_errors_xlsx", "mapping_xlsx"):
                     st.session_state.pop(key, None)
                 st.rerun()
 
-    # --- Step 5: Export ---
-    st.header("5. Downloads")
-    dl_cols = st.columns(3)
+    # --- Downloads ---
+    st.divider()
+    st.subheader("Downloads")
 
-    with dl_cols[0]:
-        if "mapping_xlsx" not in st.session_state:
-            st.session_state["mapping_xlsx"] = build_mapping_excel(old_urls, new_urls)
-        st.download_button(
-            "URL Mapping (OW -> DEP)",
-            data=st.session_state["mapping_xlsx"],
-            file_name=f"url_mapping_{cl}.xlsx",
+    if "mapping_xlsx" not in st.session_state:
+        st.session_state["mapping_xlsx"] = build_mapping_excel(old_urls, new_urls)
+
+    dl1, dl2, dl3 = st.columns(3)
+    dl1.download_button(
+        f"Mapping ({cl})",
+        data=st.session_state["mapping_xlsx"],
+        file_name=f"url_mapping_{cl}.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        type="primary",
+        use_container_width=True,
+    )
+
+    if "ow_statuses" in st.session_state:
+        if "ow_errors_xlsx" not in st.session_state:
+            st.session_state["ow_errors_xlsx"] = build_ow_errors_excel(
+                old_urls, st.session_state["ow_statuses"]
+            )
+        ow_err = sum(1 for c, _ in st.session_state["ow_statuses"].values() if not (200 <= c <= 299))
+        dl2.download_button(
+            f"OW Errors ({ow_err})",
+            data=st.session_state["ow_errors_xlsx"],
+            file_name=f"ow_errors_{cl}.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            type="primary",
+            use_container_width=True,
         )
+    else:
+        dl2.caption("Run checks first")
 
-    with dl_cols[1]:
-        if "ow_statuses" in st.session_state:
-            if "ow_errors_xlsx" not in st.session_state:
-                st.session_state["ow_errors_xlsx"] = build_ow_errors_excel(
-                    old_urls, st.session_state["ow_statuses"]
-                )
-            ow_err_count = sum(
-                1 for c, _ in st.session_state["ow_statuses"].values()
-                if not (200 <= c <= 299)
+    if "dep_statuses" in st.session_state:
+        if "dep_errors_xlsx" not in st.session_state:
+            st.session_state["dep_errors_xlsx"] = build_dep_errors_excel(
+                new_urls, st.session_state["dep_statuses"]
             )
-            st.download_button(
-                f"OW Errors ({ow_err_count})",
-                data=st.session_state["ow_errors_xlsx"],
-                file_name=f"ow_errors_{cl}.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            )
-        else:
-            st.caption("Run OW check first")
-
-    with dl_cols[2]:
-        if "dep_statuses" in st.session_state:
-            if "dep_errors_xlsx" not in st.session_state:
-                st.session_state["dep_errors_xlsx"] = build_dep_errors_excel(
-                    new_urls, st.session_state["dep_statuses"]
-                )
-            dep_err_count = sum(
-                1 for c, _ in st.session_state["dep_statuses"].values()
-                if not (200 <= c <= 399)
-            )
-            st.download_button(
-                f"DEP Errors ({dep_err_count})",
-                data=st.session_state["dep_errors_xlsx"],
-                file_name=f"dep_errors_{cl}.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            )
-        else:
-            st.caption("Run DEP check first")
+        dep_err = sum(1 for c, _ in st.session_state["dep_statuses"].values() if not (200 <= c <= 399))
+        dl3.download_button(
+            f"DEP Errors ({dep_err})",
+            data=st.session_state["dep_errors_xlsx"],
+            file_name=f"dep_errors_{cl}.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            use_container_width=True,
+        )
+    else:
+        dl3.caption("Run checks first")
 
 
 if __name__ == "__main__":
