@@ -46,7 +46,8 @@ def load_cat_dict() -> dict[str, str]:
 
 
 def read_sitemap_urls(file_obj) -> list[str]:
-    """Read URLs from column A of an uploaded Excel file."""
+    """Read URLs from column A of an uploaded Excel file.
+    Auto-adds the homepage URL if missing."""
     wb = openpyxl.load_workbook(file_obj, read_only=True, data_only=True)
     ws = wb.active
     urls: list[str] = []
@@ -57,7 +58,32 @@ def read_sitemap_urls(file_obj) -> list[str]:
             if s.startswith("http"):
                 urls.append(s)
     wb.close()
+
+    # Auto-add homepage URL if missing
+    if urls:
+        country, lang = detect_country_lang(urls)
+        if country and lang:
+            homepage = f"https://www.henkel-adhesives.com/{country}/{lang}.html"
+            if homepage not in urls:
+                urls.insert(0, homepage)
+
     return urls
+
+
+def detect_country_lang(urls: list[str]) -> tuple[str, str]:
+    """Detect country/lang from a list of henkel-adhesives.com URLs."""
+    for url in urls:
+        p = url.lower().find(".com/")
+        if p < 0:
+            continue
+        after = url[p + 5:]
+        parts = after.split("/")
+        if len(parts) >= 2:
+            country = parts[0].strip().lower()
+            lang = remove_html_ext(parts[1].strip()).lower()
+            if country and lang and len(country) <= 3 and len(lang) <= 3:
+                return country, lang
+    return "", ""
 
 
 # =========================================================
@@ -376,14 +402,18 @@ def main():
     )
 
     if uploaded and "old_urls" not in st.session_state:
-        st.session_state["old_urls"] = read_sitemap_urls(uploaded)
+        urls = read_sitemap_urls(uploaded)
+        st.session_state["old_urls"] = urls
+        country, lang = detect_country_lang(urls)
+        st.session_state["country_lang"] = f"{country}-{lang}" if country else "unknown"
 
     if "old_urls" not in st.session_state:
         st.info("Upload a sitemap Excel file to get started.")
         return
 
     old_urls = st.session_state["old_urls"]
-    st.success(f"{len(old_urls)} URLs loaded")
+    cl = st.session_state.get("country_lang", "unknown")
+    st.success(f"{len(old_urls)} URLs loaded (detected: **{cl}**)")
 
     # --- Step 2: Generate Mappings ---
     st.header("2. Generate New URLs")
@@ -442,8 +472,49 @@ def main():
             st.metric("OK", ok_count)
             st.metric("Redirect", redir_count)
 
-    # --- Step 4: Export ---
-    st.header("4. Downloads")
+    # --- Step 4: Fix DEP 404 Errors ---
+    if "dep_statuses" in st.session_state:
+        dep = st.session_state["dep_statuses"]
+
+        # Build list of 404 errors with their corresponding old URLs
+        error_rows = []
+        for idx, (old, new) in enumerate(zip(old_urls, new_urls)):
+            code, _err = dep.get(new, (-1, ""))
+            if code == 404:
+                error_rows.append({"index": idx, "OW URL": old, "DEP URL (404)": new, "New DEP URL": new})
+
+        if error_rows:
+            st.header("4. Fix DEP 404 Errors")
+            st.warning(f"**{len(error_rows)}** DEP URLs returned 404. Edit the 'New DEP URL' column to fix them.")
+
+            error_df = pd.DataFrame(error_rows)
+            edited_df = st.data_editor(
+                error_df[["OW URL", "DEP URL (404)", "New DEP URL"]],
+                column_config={
+                    "OW URL": st.column_config.TextColumn("OW URL", disabled=True, width="large"),
+                    "DEP URL (404)": st.column_config.TextColumn("DEP URL (404)", disabled=True, width="large"),
+                    "New DEP URL": st.column_config.TextColumn("New DEP URL", width="large"),
+                },
+                use_container_width=True,
+                num_rows="fixed",
+                key="dep_404_editor",
+            )
+
+            if st.button("Apply Fixes", type="primary"):
+                # Merge edits back into new_urls
+                updated_urls = list(new_urls)
+                for i, row in enumerate(error_rows):
+                    new_val = edited_df.iloc[i]["New DEP URL"]
+                    if new_val and new_val != row["DEP URL (404)"]:
+                        updated_urls[row["index"]] = new_val
+                st.session_state["new_urls"] = updated_urls
+                # Clear stale caches
+                for key in ("dep_statuses", "dep_errors_xlsx", "mapping_xlsx"):
+                    st.session_state.pop(key, None)
+                st.rerun()
+
+    # --- Step 5: Export ---
+    st.header("5. Downloads")
     dl_cols = st.columns(3)
 
     with dl_cols[0]:
@@ -452,7 +523,7 @@ def main():
         st.download_button(
             "URL Mapping (OW -> DEP)",
             data=st.session_state["mapping_xlsx"],
-            file_name="url_mapping.xlsx",
+            file_name=f"url_mapping_{cl}.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             type="primary",
         )
@@ -470,7 +541,7 @@ def main():
             st.download_button(
                 f"OW Errors ({ow_err_count})",
                 data=st.session_state["ow_errors_xlsx"],
-                file_name="ow_url_errors.xlsx",
+                file_name=f"ow_errors_{cl}.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             )
         else:
@@ -489,7 +560,7 @@ def main():
             st.download_button(
                 f"DEP Errors ({dep_err_count})",
                 data=st.session_state["dep_errors_xlsx"],
-                file_name="dep_url_errors.xlsx",
+                file_name=f"dep_errors_{cl}.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             )
         else:
