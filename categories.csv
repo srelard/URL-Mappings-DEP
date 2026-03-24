@@ -1,0 +1,249 @@
+category,level,henkel_code,norm_key
+Industrial adhesives,Level 1,2.3.5.4.1,industrialadhesives
+Industrial adhesive tapes,Level 2,2.3.5.4.1.20,industrialadhesivetapes
+Contact adhesives,Level 2,2.3.5.4.1.21,contactadhesives
+Die attach adhesives,Level 2,2.3.5.4.1.2,dieattachadhesives
+Die attach films,Level 3,2.3.5.4.1.2.1,dieattachfilms
+Die attach pastes,Level 3,2.3.5.4.1.2.2,dieattachpastes
+Electrically conductive die attach pastes,Level 3,2.3.5.4.1.2.5,electricallyconductivedieattachpastes
+Electrically non-conductive die attach pastes,Level 3,2.3.5.4.1.2.3,electricallynonconductivedieattachpastes
+Semi sintering die attach pastes,Level 3,2.3.5.4.1.2.4,semisinteringdieattachpastes
+Electrically conductive adhesives,Level 2,2.3.5.4.1.1,electricallyconductiveadhesives
+Electrically non-conductive adhesives,Level 2,2.3.5.4.1.6,electricallynonconductiveadhesives
+Film adhesives,Level 2,2.3.5.4.1.22,filmadhesives
+Flexible adhesives,Level 2,2.3.5.4.1.3,flexibleadhesives
+Hot melt adhesives,Level 2,2.3.5.4.1.4,hotmeltadhesives
+Instant adhesives,Level 2,2.3.5.4.1.5,instantadhesives
+Laminating adhesives,Level 2,2.3.5.4.1.18,laminatingadhesives
+Optically clear adhesives,Level 2,2.3.5.4.1.19,opticallyclearadhesives
+Pressure sensitive adhesives,Level 2,2.3.5.4.1.7,pressuresensitiveadhesives
+Pre-applied adhesives,Level 2,2.3.5.4.1.8,preappliedadhesives
+Adhesive primers,Level 2,2.3.5.4.1.23,adhesiveprimers
+Adhesive activators,Level 2,2.3.5.4.1.24,adhesiveactivators
+Adhesive accelerators,Level 2,2.3.5.4.1.25,adhesiveaccelerators
+Pretreatment cleaners for adhesives,Level 2,2.3.5.4.1.26,pretreatmentcleanersforadhesives
+Retaining compounds,Level 2,2.3.5.4.1.9,retainingcompounds
+Solvent based adhesives,Level 2,2.3.5.4.1.10,solventbasedadhesives
+Structural adhesives,Level 2,2.3.5.4.1.11,structuraladhesives
+Structural foams,Level 2,2.3.5.4.1.27,structuralfoams
+Surface mount adhesives,Level 2,2.3.5.4.1.12,surfacemountadhesives
+Threadlockers,Level 2,2.3.5.4.1.13,threadlockers
+Light curing adhesives,Level 2,2.3.5.4.1.15,lightcuringadhesives
+Water based adhesives,Level 2,2.3.5.4.1.16,waterbasedadhesives
+Windshield adhesives,Level 2,2.3.5.4.1.17,windshieldadhesives
+Industrial cleaners,Level 1,2.3.5.4.2,industrialcleaners
+Industrial degreasers,Level 2,2.3.5.4.2.1,industrialdegreasers
+Industrial degreasers for adhesives,Level 3,2.3.5.4.2.1.1,industrialdegreasersforadhesives
+Industrial degreasers for sealants,Level 3,2.3.5.4.2.1.2,industrialdegreasersforsealants
+Hot melt cleaners,Level 2,2.3.5.4.2.2,hotmeltcleaners
+Electrical cleaners,Level 2,2.3.5.4.2.3,electricalcleaners
+General industrial cleaners,Level 2,2.3.5.4.2.4,generalindustrialcleaners
+Industrial cleaners for surface treatments,Level 2,2.3.5.4.2.10,industrialcleanersforsurfacetreatments
+Rust removers for surface treatments,Level 3,2.3.5.4.2.10.1,rustremoversforsurfacetreatments
+Cleaners with rust protection for surface treatments,Level 3,2.3.5.4.2.10.2,cleanerswithrustprotectionforsurfacetreatments
+Purge solvents,Level 3,2.3.5.4.2.10.3,purgesolvents
+Membrane cleaners,Level 3,2.3.5.4.2.10.4,membranecleaners
+Facilities cleaners,Level 3,2.3.5.4.2.10.5,facilitiescleaners
+Windshield cleaners,Level 3,2.3.5.4.2.10.6,windshieldcleaners
+Maintenance cleaners,Level 3,2.3.5.4.2.10.7,maintenancecleaners
+Industrial glass cleaners,Level 2,2.3.5.4.2.5,industrialglasscleaners
+Hand cleaners,Level 2,2.3.5.4.2.8,handcleaners
+Rust preventatives,Level 2,2.3.5.4.2.9,rustpreventatives
+Metal process cleaners,Level 2,2.3.5.4.2.6,metalprocesscleaners
+Mold release cleaners,Level 2,2.3.5.4.2.7,moldreleasecleaners
+Industrial coatings,Level 1,2.3.5.4.3,industrialcoatings
+Blemish highlighting coatings,Level 2,2.3.5.4.3.1,blemishhighlightingcoatings
+Crusher backing,Level 2,2.3.5.4.3.2,crusherbacking
+Body fillers,Level 2,2.3.5.4.3.13,bodyfillers
+Corrosion protectors,Level 2,2.3.5.4.3.14,corrosionprotectors
+Dispersion coatings,Level 2,2.3.5.4.3.3,dispersioncoatings
+Can coatings,Level 2,2.3.5.4.3.4,cancoatings
+Floor coatings,Level 2,2.3.5.4.3.5,floorcoatings
+Industrial inks and coatings,Level 2,2.3.5.4.3.6,industrialinksandcoatings
+Mold release agents,Level 2,2.3.5.4.3.7,moldreleaseagents
+Industrial overcoatings,Level 2,2.3.5.4.3.8,industrialovercoatings
+Coating primers,Level 2,2.3.5.4.3.18,coatingprimers
+Coating thinners,Level 2,2.3.5.4.3.19,coatingthinners
+Protective coatings,Level 2,2.3.5.4.3.10,protectivecoatings
+Sound dampers,Level 2,2.3.5.4.3.15,sounddampers
+Wear resistant coatings,Level 2,2.3.5.4.3.12,wearresistantcoatings
+Weatherstrip coatings,Level 2,2.3.5.4.3.11,weatherstripcoatings
+Composite assembly materials,Level 1,2.3.5.4.4,compositeassemblymaterials
+Composite adhesives,Level 2,2.3.5.4.4.1,compositeadhesives
+Industrial lubricants,Level 1,2.3.5.4.7,industriallubricants
+Anti-seize lubricants,Level 2,2.3.5.4.7.1,antiseizelubricants
+Metal forming lubricants,Level 2,2.3.5.4.7.2,metalforminglubricants
+Forging lubricants,Level 3,2.3.5.4.7.2.1,forginglubricants
+Forging ferrous lubricants,Level 4,2.3.5.4.7.2.1.1,forgingferrouslubricants
+Forging non-ferrous lubricants,Level 4,2.3.5.4.7.2.1.2,forgingnonferrouslubricants
+Casting lubricants,Level 3,2.3.5.4.7.2.2,castinglubricants
+High pressure casting lubricants,Level 4,2.3.5.4.7.2.2.1,highpressurecastinglubricants
+Low pressure casting lubricants,Level 4,2.3.5.4.7.2.2.2,lowpressurecastinglubricants
+Cold-forming lubricants,Level 3,2.3.5.4.7.2.3,coldforminglubricants
+Polymer-based cold-forming lubricants (PULS),Level 4,2.3.5.4.7.2.3.1,polymerbasedcoldforminglubricants(puls)
+Drawing lubricants,Level 3,2.3.5.4.7.2.4,drawinglubricants
+Machining lubricants,Level 2,2.3.5.4.7.4,machininglubricants
+Stamping lubricants,Level 3,2.3.5.4.7.4.1,stampinglubricants
+Metalworking fluids,Level 2,2.3.5.4.7.5,metalworkingfluids
+Petroleum based greases,Level 2,2.3.5.4.7.6,petroleumbasedgreases
+Specialty oils and lubricants,Level 2,2.3.5.4.7.7,specialtyoilsandlubricants
+Synthetic lubricants,Level 2,2.3.5.4.7.8,syntheticlubricants
+Compounds for electronics,Level 1,2.3.5.4.8,compoundsforelectronics
+Damming materials,Level 2,2.3.5.4.8.1,dammingmaterials
+Encapsulants,Level 2,2.3.5.4.8.2,encapsulants
+Fill encapsulants,Level 2,2.3.5.4.8.3,fillencapsulants
+Glob top materials,Level 2,2.3.5.4.8.4,globtopmaterials
+Injection molding compounds,Level 2,2.3.5.4.8.6,injectionmoldingcompounds
+Lid attach materials,Level 2,2.3.5.4.8.5,lidattachmaterials
+Potting compounds,Level 2,2.3.5.4.8.7,pottingcompounds
+Conformal coatings,Level 2,2.3.5.4.8.8,conformalcoatings
+Underfills,Level 2,2.3.5.4.8.9,underfills
+Industrial repair materials,Level 1,2.3.5.4.9,industrialrepairmaterials
+Activators for repair materials,Level 2,2.3.5.4.9.10,activatorsforrepairmaterials
+Additives for repair materials,Level 2,2.3.5.4.9.11,additivesforrepairmaterials
+Concrete repair materials,Level 2,2.3.5.4.9.1,concreterepairmaterials
+Grout materials,Level 2,2.3.5.4.9.2,groutmaterials
+Machinery repair materials,Level 2,2.3.5.4.9.3,machineryrepairmaterials
+Metal rebuilding materials,Level 2,2.3.5.4.9.4,metalrebuildingmaterials
+O-ring repair materials,Level 2,2.3.5.4.9.5,oringrepairmaterials
+Pipe repair materials,Level 2,2.3.5.4.9.6,piperepairmaterials
+Repair kits,Level 2,2.3.5.4.9.7,repairkits
+Rubber and belt repair materials,Level 2,2.3.5.4.9.9,rubberandbeltrepairmaterials
+Industrial sealants,Level 1,2.3.5.4.10,industrialsealants
+Flexible sealants,Level 2,2.3.5.4.10.1,flexiblesealants
+Floor sealants,Level 2,2.3.5.4.10.2,floorsealants
+Industrial topcoatings,Level 2,2.3.5.4.10.6,industrialtopcoatings
+Gasketing,Level 2,2.3.5.4.10.3,gasketing
+Liquid gaskets,Level 2,2.3.5.4.10.11,liquidgaskets
+Mold release sealants,Level 2,2.3.5.4.10.4,moldreleasesealants
+Porosity sealants,Level 2,2.3.5.4.10.5,porositysealants
+Pre-applied sealants,Level 2,2.3.5.4.10.12,preappliedsealants
+Sealant primers,Level 2,2.3.5.4.10.13,sealantprimers
+Sealant activators,Level 2,2.3.5.4.10.14,sealantactivators
+Sealant accelerators,Level 2,2.3.5.4.10.15,sealantaccelerators
+Pretreatment cleaners for sealants,Level 2,2.3.5.4.10.16,pretreatmentcleanersforsealants
+Can sealants,Level 2,2.3.5.4.10.17,cansealants
+Thread sealants,Level 2,2.3.5.4.10.7,threadsealants
+Light curing sealants,Level 2,2.3.5.4.10.8,lightcuringsealants
+Specialty sealants,Level 2,2.3.5.4.10.10,specialtysealants
+"Noise, vibration and harshness (NVH) sealants",Level 2,2.3.5.4.10.9,"noise,vibrationandharshness(nvh)sealants"
+Solder materials,Level 1,2.3.5.4.11,soldermaterials
+Solder accessories,Level 2,2.3.5.4.11.2,solderaccessories
+Flux materials,Level 2,2.3.5.4.11.1,fluxmaterials
+Solder pastes,Level 2,2.3.5.4.11.3,solderpastes
+Solder wires,Level 2,2.3.5.4.11.4,solderwires
+Surface treatments,Level 1,2.3.5.4.12,surfacetreatments
+Conversion coatings,Level 2,2.3.5.4.12.1,conversioncoatings
+Chrome-free conversion coatings,Level 3,2.3.5.4.12.1.1,chromefreeconversioncoatings
+Chromate conversion coatings,Level 3,2.3.5.4.12.1.2,chromateconversioncoatings
+Pretreatment coatings,Level 2,2.3.5.4.12.2,pretreatmentcoatings
+Iron phosphate coatings,Level 3,2.3.5.4.12.2.1,ironphosphatecoatings
+Zinc phosphate coatings,Level 3,2.3.5.4.12.2.2,zincphosphatecoatings
+Chrome phosphate coatings,Level 3,2.3.5.4.12.2.3,chromephosphatecoatings
+Zirconate coatings,Level 3,2.3.5.4.12.2.4,zirconatecoatings
+Functional coatings,Level 2,2.3.5.4.12.3,functionalcoatings
+Autodeposition coatings,Level 2,2.3.5.4.12.9,autodepositioncoatings
+Manganese phosphate coatings,Level 2,2.3.5.4.12.10,manganesephosphatecoatings
+Corrosion inhibitors,Level 2,2.3.5.4.12.6,corrosioninhibitors
+Paint strippers,Level 2,2.3.5.4.12.7,paintstrippers
+Paint strippers for maintenance,Level 3,2.3.5.4.12.7.3,paintstrippersformaintenance
+Paint strippers for coatings,Level 3,2.3.5.4.12.7.1,paintstrippersforcoatings
+Paint strippers additives,Level 3,2.3.5.4.12.7.2,paintstrippersadditives
+Deoxidizers,Level 2,2.3.5.4.12.11,deoxidizers
+Etchants,Level 2,2.3.5.4.12.12,etchants
+General etchants,Level 3,2.3.5.4.12.12.1,generaletchants
+Acid etchants,Level 3,2.3.5.4.12.12.2,acidetchants
+Alkaline etchants,Level 3,2.3.5.4.12.12.3,alkalineetchants
+Aluminum etchants,Level 3,2.3.5.4.12.12.4,aluminumetchants
+Scale removers,Level 3,2.3.5.4.12.12.5,scaleremovers
+Polishing compounds,Level 2,2.3.5.4.12.8,polishingcompounds
+Surface post treatments,Level 2,2.3.5.4.12.5,surfaceposttreatments
+Industrial pretreatment conditioners,Level 2,2.3.5.4.12.4,industrialpretreatmentconditioners
+Industrial degreasers for surface treatments,Level 2,2.3.5.4.12.14,industrialdegreasersforsurfacetreatments
+General industrial degreasers for surface treatments,Level 3,2.3.5.4.12.14.1,generalindustrialdegreasersforsurfacetreatments
+Aluminum degreasers for surface treatments,Level 3,2.3.5.4.12.14.2,aluminumdegreasersforsurfacetreatments
+Heavy duty degreasers for surface treatments,Level 3,2.3.5.4.12.14.3,heavydutydegreasersforsurfacetreatments
+Paint coagulation products,Level 2,2.3.5.4.12.15,paintcoagulationproducts
+Anodize materials,Level 2,2.3.5.4.12.16,anodizematerials
+Anodize chemicals and colorants,Level 3,2.3.5.4.12.16.1,anodizechemicalsandcolorants
+Anodize additives,Level 3,2.3.5.4.12.16.2,anodizeadditives
+Additives,Level 2,2.3.5.4.12.17,additives
+Defoamers,Level 2,2.3.5.4.12.18,defoamers
+Thermal management materials,Level 1,2.3.5.4.13,thermalmanagementmaterials
+Thermal interface materials,Level 2,2.3.5.4.13.13,thermalinterfacematerials
+Phase change materials,Level 2,2.3.5.4.13.1,phasechangematerials
+Thermal clad dielectric materials,Level 2,2.3.5.4.13.4,thermalcladdielectricmaterials
+Thermal gap fillers,Level 2,2.3.5.4.13.5,thermalgapfillers
+Thermal GAP PAD materials,Level 2,2.3.5.4.13.6,thermalgappadmaterials
+Thermal greases,Level 2,2.3.5.4.13.2,thermalgreases
+Thermally conductive adhesives,Level 2,2.3.5.4.13.7,thermallyconductiveadhesives
+Thermally conductive films,Level 2,2.3.5.4.13.15,thermallyconductivefilms
+Thermal SIL PAD materials,Level 2,2.3.5.4.13.10,thermalsilpadmaterials
+Thermally conductive greases,Level 2,2.3.5.4.13.11,thermallyconductivegreases
+Thermal gels,Level 2,2.3.5.4.13.14,thermalgels
+Equipment,Level 1,2.3.5.4.6,equipment
+Dispense systems,Level 2,2.3.5.4.6.1,dispensesystems
+Anaerobic dispense systems,Level 3,2.3.5.4.6.1.1,anaerobicdispensesystems
+Bottle dispense systems,Level 3,2.3.5.4.6.1.3,bottledispensesystems
+Cartridge dispensing systems,Level 3,2.3.5.4.6.1.4,cartridgedispensingsystems
+Dual cartridge dispensing systems,Level 4,2.3.5.4.6.1.4.1,dualcartridgedispensingsystems
+Single cartridge dispense systems,Level 4,2.3.5.4.6.1.4.2,singlecartridgedispensesystems
+Hot melt dispense systems,Level 3,2.3.5.4.6.1.5,hotmeltdispensesystems
+Process control and monitoring systems for dispense systems,Level 3,2.3.5.4.6.1.7,processcontrolandmonitoringsystemsfordispensesystems
+Syringe dispense systems,Level 3,2.3.5.4.6.1.8,syringedispensesystems
+Volumetric dispensing systems,Level 3,2.3.5.4.6.1.10,volumetricdispensingsystems
+Parts and accessories for dispense systems,Level 3,2.3.5.4.6.1.12,partsandaccessoriesfordispensesystems
+Cartridge adapters and accessories,Level 3,2.3.5.4.6.1.14,cartridgeadaptersandaccessories
+Pail mixing systems,Level 3,2.3.5.4.6.1.15,pailmixingsystems
+"Controllers, reservoirs and dispense valves",Level 3,2.3.5.4.6.1.16,"controllers,reservoirsanddispensevalves"
+Controllers and dispense reservoirs,Level 4,2.3.5.4.6.1.16.1,controllersanddispensereservoirs
+Dispense valves,Level 4,2.3.5.4.6.1.16.2,dispensevalves
+Diaphragm dispense valves,Level 5,2.3.5.4.6.1.16.2.1,diaphragmdispensevalves
+Handheld dispense valves,Level 5,2.3.5.4.6.1.16.2.2,handhelddispensevalves
+High viscosity fluid and paste dispense valves,Level 5,2.3.5.4.6.1.16.2.3,highviscosityfluidandpastedispensevalves
+High precision dispense valves,Level 5,2.3.5.4.6.1.16.2.4,highprecisiondispensevalves
+Light curing systems,Level 2,2.3.5.4.6.2,lightcuringsystems
+LED light curing systems,Level 3,2.3.5.4.6.2.1,ledlightcuringsystems
+LED flood curing systems,Level 4,2.3.5.4.6.2.1.1,ledfloodcuringsystems
+LED spot curing and handheld systems,Level 4,2.3.5.4.6.2.1.3,ledspotcuringandhandheldsystems
+UV and visible light curing systems,Level 3,2.3.5.4.6.2.2,uvandvisiblelightcuringsystems
+Process control and monitoring systems for light curing systems,Level 3,2.3.5.4.6.2.3,processcontrolandmonitoringsystemsforlightcuringsystems
+Parts and accessories for light curing systems,Level 3,2.3.5.4.6.2.4,partsandaccessoriesforlightcuringsystems
+Functional coating systems,Level 2,2.3.5.4.6.3,functionalcoatingsystems
+Process control systems for metal pretreatments,Level 3,2.3.5.4.6.3.1,processcontrolsystemsformetalpretreatments
+Process control systems,Level 4,2.3.5.4.6.3.1.1,processcontrolsystems
+Process control accessories,Level 4,2.3.5.4.6.3.1.2,processcontrolaccessories
+Process control modules,Level 4,2.3.5.4.6.3.1.3,processcontrolmodules
+Process control sensors,Level 4,2.3.5.4.6.3.1.4,processcontrolsensors
+Process control support systems and pretreatment support equipment,Level 3,2.3.5.4.6.3.2,processcontrolsupportsystemsandpretreatmentsupportequipment
+Air diaphragm pumps,Level 4,2.3.5.4.6.3.2.1,airdiaphragmpumps
+Chemical metering pumps,Level 4,2.3.5.4.6.3.2.2,chemicalmeteringpumps
+Coalescing oil separators,Level 4,2.3.5.4.6.3.2.3,coalescingoilseparators
+Ion exchange system,Level 4,2.3.5.4.6.3.2.4,ionexchangesystem
+Level control assemblies,Level 4,2.3.5.4.6.3.2.5,levelcontrolassemblies
+Test and data management system,Level 3,2.3.5.4.6.3.3,testanddatamanagementsystem
+Parts and accessories for functional coating systems,Level 3,2.3.5.4.6.3.4,partsandaccessoriesforfunctionalcoatingsystems
+Spray nozzle assemblies,Level 4,2.3.5.4.6.3.4.1,spraynozzleassemblies
+Flat spray nozzle assemblies,Level 5,2.3.5.4.6.3.4.1.1,flatspraynozzleassemblies
+Plug spray nozzle assemblies,Level 5,2.3.5.4.6.3.4.1.2,plugspraynozzleassemblies
+Hollow cone spray nozzle assemblies,Level 5,2.3.5.4.6.3.4.1.3,hollowconespraynozzleassemblies
+Threaded ball spray nozzle assemblies,Level 5,2.3.5.4.6.3.4.1.4,threadedballspraynozzleassemblies
+Spray nozzle tips,Level 4,2.3.5.4.6.3.4.2,spraynozzletips
+Flat spray nozzle tips,Level 5,2.3.5.4.6.3.4.2.1,flatspraynozzletips
+Plug spray nozzle tips,Level 5,2.3.5.4.6.3.4.2.2,plugspraynozzletips
+Hollow cone spray nozzle tips,Level 5,2.3.5.4.6.3.4.2.3,hollowconespraynozzletips
+Threaded Ball spray nozzle tips,Level 5,2.3.5.4.6.3.4.2.4,threadedballspraynozzletips
+"Dry in place nozzle assemblies, parts and accessories",Level 4,2.3.5.4.6.3.4.3,"dryinplacenozzleassemblies,partsandaccessories"
+Recycling supplies for adhesives and sealants bottles,Level 2,2.3.5.4.6.4,recyclingsuppliesforadhesivesandsealantsbottles
+Anaerobic bottle recycling boxes,Level 3,2.3.5.4.6.4.1,anaerobicbottlerecyclingboxes
+Light cure bottle recycling boxes,Level 3,2.3.5.4.6.4.2,lightcurebottlerecyclingboxes
+3D printers and 3D curing systems,Level 2,2.3.5.4.6.5,3dprintersand3dcuringsystems
+SONDERHOFF dosing machines,Level 2,2.3.5.4.6.6,sonderhoffdosingmachines
+Consumables and supplies,Level 2,2.3.5.4.6.7,consumablesandsupplies
+Dispensing needles and tips,Level 3,2.3.5.4.6.7.1,dispensingneedlesandtips
+Mixing nozzles,Level 3,2.3.5.4.6.7.2,mixingnozzles
+Syringe consumables / supplies,Level 3,2.3.5.4.6.7.3,syringeconsumables/supplies
+"Tubing, fittings and other accessories",Level 3,2.3.5.4.6.7.4,"tubing,fittingsandotheraccessories"
+Automated robotic systems,Level 2,2.3.5.4.6.8,automatedroboticsystems
+Robot parts and accessories,Level 3,2.3.5.4.6.8.5,robotpartsandaccessories
+Robot systems,Level 3,2.3.5.4.6.8.6,robotsystems
