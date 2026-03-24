@@ -6,3 +6,7 @@ venv/
 ~$*.xlsx
 *.tmp
 .streamlit/
+.claude/
+_bckp/
+ow-exports/
+*.xlsm
