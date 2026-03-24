@@ -461,6 +461,16 @@ def main():
         col4.metric("DEP Redirect", dep_redir)
         col5.metric("DEP 404", dep_404)
 
+        # Show OW errors inline
+        if ow_404 > 0:
+            with st.expander(f"Show OW Errors ({ow_404})", expanded=False):
+                ow_err_rows = []
+                for url in old_urls:
+                    code, err = ow.get(url, (-1, ""))
+                    if not (200 <= code <= 299):
+                        ow_err_rows.append({"OW URL": url, "Status": status_label_ow(code, err)})
+                st.dataframe(pd.DataFrame(ow_err_rows), use_container_width=True)
+
         if st.button("Re-run checks"):
             for key in ("ow_statuses", "dep_statuses", "ow_errors_xlsx", "dep_errors_xlsx", "mapping_xlsx"):
                 st.session_state.pop(key, None)
