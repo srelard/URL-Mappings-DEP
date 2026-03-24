@@ -377,7 +377,21 @@ def build_dep_errors_excel(
 def main():
     st.set_page_config(page_title="URL Redirect Mapping Tool", layout="wide")
     st.title("URL Redirect Mapping Tool")
-    st.caption("Henkel Adhesives: OW -> DEP URL Migration")
+    st.caption("Henkel Adhesives Technologies — OneWeb to DEP URL Migration")
+
+    st.markdown("""
+**Purpose:** Automatically maps old OneWeb (OW) URLs to new Digital Experience Platform (DEP) URLs
+based on URL section rules and product category matching.
+
+**How to use:**
+1. Upload a sitemap export (`.xlsx`, column A = URLs) — the homepage URL is added automatically if missing
+2. URL mappings are generated instantly after upload
+3. Click **Run HTTP Checks** to verify both OW and DEP URLs
+4. Fix any DEP 404 errors directly in the table below
+5. Download the final mapping and error reports
+""")
+
+    st.divider()
 
     # Load categories
     try:
