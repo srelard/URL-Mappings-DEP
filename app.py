@@ -271,27 +271,17 @@ async def _check_all(
 
 
 def run_checks(
-    urls: list[str], follow_redirects: bool, progress_bar=None, label: str = ""
+    urls: list[str], follow_redirects: bool
 ) -> dict[str, tuple[int, str]]:
-    """Sync wrapper for async HTTP checks. Safe to call from Streamlit.
-    Progress bar is updated after completion (thread-safe)."""
-    # Deduplicate
+    """Sync wrapper for async HTTP checks. Safe to call from Streamlit."""
     unique_urls = list(dict.fromkeys(urls))
-
-    if progress_bar:
-        progress_bar.progress(0.05, text=f"{label} 0/{len(unique_urls)}")
 
     with ThreadPoolExecutor(max_workers=1) as pool:
         future = pool.submit(
             asyncio.run,
             _check_all(unique_urls, follow_redirects),
         )
-        results = future.result()
-
-    if progress_bar:
-        progress_bar.progress(1.0, text=f"{label} {len(results)}/{len(unique_urls)} done!")
-
-    return results
+        return future.result()
 
 
 # =========================================================
@@ -382,8 +372,13 @@ def main():
         st.error(f"Categories file not found: {CATEGORIES_CSV}")
         st.stop()
 
+    # Sidebar: debug + reset
     st.sidebar.header("Status")
     st.sidebar.metric("Product Categories", len(cat_dict))
+    st.sidebar.caption(f"Session keys: {list(st.session_state.keys())}")
+    if st.sidebar.button("Reset (new file)"):
+        st.session_state.clear()
+        st.rerun()
 
     # --- Step 1: Upload ---
     st.header("1. Upload Sitemap")
@@ -392,42 +387,35 @@ def main():
         type=["xlsx", "xls"],
     )
 
-    if uploaded:
-        old_urls = read_sitemap_urls(uploaded)
-        st.session_state["old_urls"] = old_urls
-        # Invalidate downstream state from previous upload
-        for key in ("new_urls", "ow_statuses", "dep_statuses", "excel_bytes"):
-            st.session_state.pop(key, None)
-        st.success(f"{len(old_urls)} URLs loaded from **{uploaded.name}**")
+    if uploaded and "old_urls" not in st.session_state:
+        st.session_state["old_urls"] = read_sitemap_urls(uploaded)
 
     if "old_urls" not in st.session_state:
-        st.stop()
+        st.info("Upload a sitemap Excel file to get started.")
+        return
 
     old_urls = st.session_state["old_urls"]
+    st.success(f"{len(old_urls)} URLs loaded")
 
     # --- Step 2: Generate Mappings ---
     st.header("2. Generate New URLs")
     if st.button("Generate URL Mappings", type="primary"):
-        new_urls = [build_new_url(u, cat_dict) for u in old_urls]
-        st.session_state["new_urls"] = new_urls
-
-    if "new_urls" in st.session_state:
-        new_urls = st.session_state["new_urls"]
-        empty_count = sum(1 for u in new_urls if not u)
-        col1, col2 = st.columns(2)
-        col1.metric("URLs mapped", len(new_urls))
-        col2.metric("Failed to map", empty_count)
-
-        with st.expander("Preview (first 50 rows)", expanded=False):
-            preview_df = pd.DataFrame(
-                {"Old URL": old_urls[:50], "New URL": new_urls[:50]}
-            )
-            st.dataframe(preview_df, use_container_width=True)
+        st.session_state["new_urls"] = [build_new_url(u, cat_dict) for u in old_urls]
 
     if "new_urls" not in st.session_state:
-        st.stop()
+        return
 
     new_urls = st.session_state["new_urls"]
+    empty_count = sum(1 for u in new_urls if not u)
+    col1, col2 = st.columns(2)
+    col1.metric("URLs mapped", len(new_urls))
+    col2.metric("Failed to map", empty_count)
+
+    with st.expander("Preview (first 50 rows)", expanded=False):
+        preview_df = pd.DataFrame(
+            {"Old URL": old_urls[:50], "New URL": new_urls[:50]}
+        )
+        st.dataframe(preview_df, use_container_width=True)
 
     # --- Step 3: HTTP Checks ---
     st.header("3. HTTP Status Checks")
@@ -437,13 +425,10 @@ def main():
     with col_a:
         st.subheader("OW URLs (follow redirects)")
         if st.button("Check OW URLs"):
-            bar = st.progress(0, text="Checking OW URLs...")
-            results = run_checks(
-                old_urls, follow_redirects=True,
-                progress_bar=bar, label="Checking OW URLs..."
-            )
-            st.session_state["ow_statuses"] = results
-            st.session_state.pop("excel_bytes", None)
+            with st.spinner("Checking OW URLs..."):
+                st.session_state["ow_statuses"] = run_checks(
+                    old_urls, follow_redirects=True
+                )
 
         if "ow_statuses" in st.session_state:
             ow = st.session_state["ow_statuses"]
@@ -455,13 +440,10 @@ def main():
     with col_b:
         st.subheader("DEP URLs (no redirects)")
         if st.button("Check DEP URLs"):
-            bar = st.progress(0, text="Checking DEP URLs...")
-            results = run_checks(
-                new_urls, follow_redirects=False,
-                progress_bar=bar, label="Checking DEP URLs..."
-            )
-            st.session_state["dep_statuses"] = results
-            st.session_state.pop("excel_bytes", None)
+            with st.spinner("Checking DEP URLs..."):
+                st.session_state["dep_statuses"] = run_checks(
+                    new_urls, follow_redirects=False
+                )
 
         if "dep_statuses" in st.session_state:
             dep = st.session_state["dep_statuses"]
