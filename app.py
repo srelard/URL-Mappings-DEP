@@ -792,7 +792,7 @@ def check_password() -> bool:
     if not password:
         return False
 
-    if password == st.secrets.get("password", "henkel2025"):
+    if password == st.secrets.get("password", "henkel2026"):
         st.session_state["authenticated"] = True
         st.rerun()
     else:
