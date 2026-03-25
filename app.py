@@ -476,14 +476,32 @@ based on URL section rules and product category matching.
         col5.metric("DEP 404", dep_404)
 
         # Show OW errors inline
-        if ow_404 > 0:
-            with st.expander(f"Show OW Errors ({ow_404})", expanded=False):
-                ow_err_rows = []
-                for url in old_urls:
-                    code, err = ow.get(url, (-1, ""))
-                    if not (200 <= code <= 299):
-                        ow_err_rows.append({"OW URL": url, "Status": status_label_ow(code, err)})
+        ow_err_rows = []
+        for url in old_urls:
+            code, err = ow.get(url, (-1, ""))
+            if not (200 <= code <= 299):
+                ow_err_rows.append({"OW URL": url, "Status": status_label_ow(code, err)})
+        if ow_err_rows:
+            with st.expander(f"OW Errors ({len(ow_err_rows)})", expanded=True):
                 st.dataframe(pd.DataFrame(ow_err_rows), use_container_width=True)
+
+        # Show DEP errors inline
+        dep_err_rows = []
+        seen = set()
+        for old, new in zip(old_urls, new_urls):
+            if new in seen:
+                continue
+            seen.add(new)
+            code, err = dep.get(new, (-1, ""))
+            if not (200 <= code <= 299):
+                dep_err_rows.append({
+                    "OW URL": old,
+                    "DEP URL": new,
+                    "Status": status_label_dep(code),
+                })
+        if dep_err_rows:
+            with st.expander(f"DEP Errors / Redirects ({len(dep_err_rows)})", expanded=True):
+                st.dataframe(pd.DataFrame(dep_err_rows), use_container_width=True)
 
         if st.button("Re-run checks"):
             for key in ("ow_statuses", "dep_statuses", "ow_errors_xlsx", "dep_errors_xlsx", "mapping_xlsx"):
