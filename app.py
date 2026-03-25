@@ -27,6 +27,29 @@ OLD_DOMAIN_MARKER = ".com/"
 HTTP_CONCURRENCY = 30
 HTTP_TIMEOUT = aiohttp.ClientTimeout(total=12, connect=5)
 
+# Country/language display names for the sitemaps we process
+COUNTRY_NAMES = {
+    "ae": "United Arab Emirates",
+    "dz": "Algeria",
+    "eg": "Egypt",
+    "hn": "Honduras",
+    "il": "Israel",
+    "ke": "Kenya",
+    "ma": "Morocco",
+    "ng": "Nigeria",
+    "pk": "Pakistan",
+    "tn": "Tunisia",
+    "tr": "Turkey",
+    "tz": "Tanzania",
+    "za": "South Africa",
+}
+LANG_NAMES = {
+    "en": "English",
+    "fr": "French",
+    "tr": "Turkish",
+    "ar": "Arabic",
+}
+
 # =========================================================
 # Data Loading
 # =========================================================
@@ -604,14 +627,28 @@ def run_batch_mode(cat_dict: dict[str, str]):
     # --- Summary table ---
     summary_rows = []
     for cl, data in results.items():
+        parts = cl.split("-", 1)
+        country_code = parts[0] if parts else cl
+        lang_code = parts[1] if len(parts) > 1 else ""
+        country_name = COUNTRY_NAMES.get(country_code, country_code.upper())
+        lang_name = LANG_NAMES.get(lang_code, lang_code.upper())
         summary_rows.append({
-            "Country": cl.upper(),
+            "Country": country_name,
+            "Language": lang_name,
+            "Code": cl,
             "File": data["filename"],
             "URLs": len(data["old_urls"]),
             "Mapped": len(data["new_urls"]),
             "Failed": sum(1 for u in data["new_urls"] if not u),
         })
-    st.dataframe(pd.DataFrame(summary_rows), use_container_width=True)
+
+    summary_df = pd.DataFrame(summary_rows)
+    # Highlight duplicate countries (multiple languages)
+    country_counts = summary_df["Country"].value_counts()
+    multi_lang = country_counts[country_counts > 1].index.tolist()
+    if multi_lang:
+        st.info(f"Multiple languages: **{', '.join(multi_lang)}**")
+    st.dataframe(summary_df, use_container_width=True)
 
     # --- HTTP Checks ---
     st.divider()
