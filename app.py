@@ -139,8 +139,10 @@ def remove_html_ext(s: str) -> str:
     return s
 
 
-def contains_text(haystack: str, needle: str) -> bool:
-    return needle in haystack.lower()
+def contains_any(haystack: str, *needles: str) -> bool:
+    """Case-insensitive check if haystack contains any of the needles."""
+    h = haystack.lower()
+    return any(n in h for n in needles)
 
 
 # =========================================================
@@ -200,21 +202,20 @@ def build_new_url(old_url: str, cat_dict: dict[str, str]) -> str:
     if not section:
         return f"{base}.html"
 
-    if contains_text(section, "applications"):
+    # Section routing — supports EN, FR, TR localized URL segments
+    if contains_any(section, "applications"):
         return f"{base}/applications.html"
-    elif contains_text(section, "industries"):
+    elif contains_any(section, "industries", "sektör"):
         return f"{base}/industries.html"
-    elif contains_text(section, "insights"):
+    elif contains_any(section, "insights", "spotlights", "actualite", "gundem"):
         return f"{base}/knowledge.html"
-    elif contains_text(section, "search"):
+    elif contains_any(section, "search", "recherche", "arama"):
         return prod_generic
-    elif contains_text(section, "services"):
+    elif contains_any(section, "services", "hizmet"):
         return f"{base}/support.html"
-    elif contains_text(section, "spotlights"):
-        return f"{base}/knowledge.html"
-    elif contains_text(section, "about"):
+    elif contains_any(section, "about", "propos", "hakkinda"):
         return f"{base}.html"
-    elif contains_text(section, "product"):
+    elif contains_any(section, "product", "produit", "urunle"):
         return build_product_url(parts, base, prod_generic, cat_dict)
     else:
         return f"{base}.html"
