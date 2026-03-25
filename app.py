@@ -457,6 +457,7 @@ based on URL section rules and product category matching.
         # Clear stale caches
         for key in ("ow_errors_xlsx", "dep_errors_xlsx", "mapping_xlsx"):
             st.session_state.pop(key, None)
+        st.rerun()
 
     if checks_done:
         ow = st.session_state["ow_statuses"]
