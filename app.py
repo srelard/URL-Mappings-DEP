@@ -372,42 +372,11 @@ def build_dep_errors_excel(
 
 
 # =========================================================
-# Streamlit UI
+# Streamlit UI — Single Mode
 # =========================================================
-def main():
-    st.set_page_config(page_title="URL Redirect Mapping Tool", layout="wide")
-    st.title("URL Redirect Mapping Tool")
-    st.caption("Henkel Adhesives Technologies — OneWeb to DEP URL Migration")
+def run_single_mode(cat_dict: dict[str, str]):
+    """Process a single sitemap file with full workflow."""
 
-    st.markdown("""
-**Purpose:** Automatically maps old OneWeb (OW) URLs to new Digital Experience Platform (DEP) URLs
-based on URL section rules and product category matching.
-
-**How to use:**
-1. Upload a sitemap export (`.xlsx`, column A = URLs) — the homepage URL is added automatically if missing
-2. URL mappings are generated instantly after upload
-3. Click **Run HTTP Checks** to verify both OW and DEP URLs
-4. Fix any DEP 404 errors directly in the table below
-5. Download the final mapping and error reports
-""")
-
-    st.divider()
-
-    # Load categories
-    try:
-        cat_dict = load_cat_dict()
-    except FileNotFoundError:
-        st.error(f"Categories file not found: {CATEGORIES_CSV}")
-        st.stop()
-
-    # Sidebar
-    st.sidebar.header("Info")
-    st.sidebar.metric("Product Categories", len(cat_dict))
-    if st.sidebar.button("Reset (new file)"):
-        st.session_state.clear()
-        st.rerun()
-
-    # --- Upload ---
     uploaded = st.file_uploader(
         "Drop a sitemap Excel file here",
         type=["xlsx", "xls"],
@@ -454,7 +423,6 @@ based on URL section rules and product category matching.
             new_urls, follow_redirects=False, progress_bar=bar
         )
         bar.progress(1.0, text="All checks complete!")
-        # Clear stale caches
         for key in ("ow_errors_xlsx", "dep_errors_xlsx", "mapping_xlsx"):
             st.session_state.pop(key, None)
         st.rerun()
@@ -598,6 +566,225 @@ based on URL section rules and product category matching.
         )
     else:
         dl3.caption("Run checks first")
+
+
+# =========================================================
+# Streamlit UI — Batch Mode
+# =========================================================
+def run_batch_mode(cat_dict: dict[str, str]):
+    """Process multiple sitemap files at once."""
+
+    uploaded_files = st.file_uploader(
+        "Drop all sitemap Excel files here",
+        type=["xlsx", "xls"],
+        accept_multiple_files=True,
+        key="batch_upload",
+    )
+
+    if not uploaded_files:
+        return
+
+    # --- Process all files ---
+    if "batch_results" not in st.session_state:
+        all_results = {}
+        progress = st.progress(0, text="Processing sitemaps...")
+        for i, f in enumerate(uploaded_files):
+            urls = read_sitemap_urls(f)
+            cl_country, cl_lang = detect_country_lang(urls)
+            cl = f"{cl_country}-{cl_lang}" if cl_country else f.name
+            new_urls = [build_new_url(u, cat_dict) for u in urls]
+            all_results[cl] = {"old_urls": urls, "new_urls": new_urls, "filename": f.name}
+            progress.progress((i + 1) / len(uploaded_files), text=f"Mapped {cl}...")
+        progress.progress(1.0, text=f"All {len(uploaded_files)} sitemaps mapped!")
+        st.session_state["batch_results"] = all_results
+        st.rerun()
+
+    results = st.session_state["batch_results"]
+
+    # --- Summary table ---
+    summary_rows = []
+    for cl, data in results.items():
+        summary_rows.append({
+            "Country": cl.upper(),
+            "File": data["filename"],
+            "URLs": len(data["old_urls"]),
+            "Mapped": len(data["new_urls"]),
+            "Failed": sum(1 for u in data["new_urls"] if not u),
+        })
+    st.dataframe(pd.DataFrame(summary_rows), use_container_width=True)
+
+    # --- HTTP Checks ---
+    st.divider()
+    batch_checked = "batch_ow_all" in st.session_state
+
+    if st.button("Run HTTP Checks (all countries)", type="primary", disabled=batch_checked):
+        all_ow_errors = []
+        all_dep_errors = []
+        total_countries = len(results)
+        bar = st.progress(0, text="Starting checks...")
+
+        for i, (cl, data) in enumerate(results.items()):
+            bar.progress(
+                i / total_countries,
+                text=f"Checking {cl.upper()} ({i+1}/{total_countries})...",
+            )
+            ow_statuses = run_checks(data["old_urls"], follow_redirects=True)
+            dep_statuses = run_checks(data["new_urls"], follow_redirects=False)
+
+            # Collect OW errors
+            for url in data["old_urls"]:
+                code, err = ow_statuses.get(url, (-1, ""))
+                if not (200 <= code <= 299):
+                    all_ow_errors.append({
+                        "Country": cl.upper(),
+                        "OW URL": url,
+                        "Status": status_label_ow(code, err),
+                    })
+
+            # Collect DEP errors
+            seen = set()
+            for old, new in zip(data["old_urls"], data["new_urls"]):
+                if new in seen:
+                    continue
+                seen.add(new)
+                code, err = dep_statuses.get(new, (-1, ""))
+                if not (200 <= code <= 399):
+                    all_dep_errors.append({
+                        "Country": cl.upper(),
+                        "OW URL": old,
+                        "DEP URL": new,
+                        "Status": status_label_dep(code),
+                    })
+
+            # Store per-country statuses
+            results[cl]["ow_statuses"] = ow_statuses
+            results[cl]["dep_statuses"] = dep_statuses
+
+        bar.progress(1.0, text="All checks complete!")
+        st.session_state["batch_results"] = results
+        st.session_state["batch_ow_all"] = all_ow_errors
+        st.session_state["batch_dep_all"] = all_dep_errors
+        st.rerun()
+
+    if batch_checked:
+        all_ow_errors = st.session_state["batch_ow_all"]
+        all_dep_errors = st.session_state["batch_dep_all"]
+
+        col1, col2 = st.columns(2)
+        col1.metric("Total OW Errors", len(all_ow_errors))
+        col2.metric("Total DEP Errors", len(all_dep_errors))
+
+        if all_ow_errors:
+            with st.expander(f"All OW Errors ({len(all_ow_errors)})", expanded=True):
+                st.dataframe(pd.DataFrame(all_ow_errors), use_container_width=True)
+
+        if all_dep_errors:
+            with st.expander(f"All DEP Errors ({len(all_dep_errors)})", expanded=True):
+                st.dataframe(pd.DataFrame(all_dep_errors), use_container_width=True)
+
+        if st.button("Re-run all checks"):
+            for key in ("batch_ow_all", "batch_dep_all", "batch_ow_xlsx", "batch_dep_xlsx"):
+                st.session_state.pop(key, None)
+            # Clear per-country statuses
+            for data in st.session_state["batch_results"].values():
+                data.pop("ow_statuses", None)
+                data.pop("dep_statuses", None)
+            st.rerun()
+
+    # --- Downloads ---
+    st.divider()
+    st.subheader("Downloads")
+
+    # Per-country mapping downloads
+    st.caption("Mappings per country:")
+    dl_cols = st.columns(min(len(results), 4))
+    for i, (cl, data) in enumerate(results.items()):
+        col = dl_cols[i % len(dl_cols)]
+        xlsx = build_mapping_excel(data["old_urls"], data["new_urls"])
+        col.download_button(
+            f"Mapping ({cl})",
+            data=xlsx,
+            file_name=f"url_mapping_{cl}.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            use_container_width=True,
+            key=f"dl_map_{cl}",
+        )
+
+    # Combined error downloads
+    if batch_checked:
+        st.caption("Combined error reports:")
+        dl_err1, dl_err2 = st.columns(2)
+
+        if all_ow_errors:
+            ow_rows = [[r["Country"], r["OW URL"], r["Status"]] for r in all_ow_errors]
+            ow_xlsx = _make_excel(["Country", "OW URL", "Status"], ow_rows)
+            dl_err1.download_button(
+                f"All OW Errors ({len(all_ow_errors)})",
+                data=ow_xlsx,
+                file_name="ow_errors_all_countries.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                use_container_width=True,
+            )
+        else:
+            dl_err1.caption("No OW errors")
+
+        if all_dep_errors:
+            dep_rows = [[r["Country"], r["OW URL"], r["DEP URL"], r["Status"]] for r in all_dep_errors]
+            dep_xlsx = _make_excel(["Country", "OW URL", "DEP URL", "Status"], dep_rows)
+            dl_err2.download_button(
+                f"All DEP Errors ({len(all_dep_errors)})",
+                data=dep_xlsx,
+                file_name="dep_errors_all_countries.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                use_container_width=True,
+            )
+        else:
+            dl_err2.caption("No DEP errors")
+
+
+# =========================================================
+# Main
+# =========================================================
+def main():
+    st.set_page_config(page_title="URL Redirect Mapping Tool", layout="wide")
+    st.title("URL Redirect Mapping Tool")
+    st.caption("Henkel Adhesives Technologies — OneWeb to DEP URL Migration")
+
+    st.markdown("""
+**Purpose:** Automatically maps old OneWeb (OW) URLs to new Digital Experience Platform (DEP) URLs
+based on URL section rules and product category matching.
+
+**How to use:**
+1. Upload a sitemap export (`.xlsx`, column A = URLs) — the homepage URL is added automatically if missing
+2. URL mappings are generated instantly after upload
+3. Click **Run HTTP Checks** to verify both OW and DEP URLs
+4. Fix any DEP 404 errors directly in the table below
+5. Download the final mapping and error reports
+""")
+
+    st.divider()
+
+    # Load categories
+    try:
+        cat_dict = load_cat_dict()
+    except FileNotFoundError:
+        st.error(f"Categories file not found: {CATEGORIES_CSV}")
+        st.stop()
+
+    # Sidebar
+    st.sidebar.header("Info")
+    st.sidebar.metric("Product Categories", len(cat_dict))
+    if st.sidebar.button("Reset"):
+        st.session_state.clear()
+        st.rerun()
+
+    # Mode toggle
+    mode = st.toggle("Batch Mode (multiple files)", value=False)
+
+    if mode:
+        run_batch_mode(cat_dict)
+    else:
+        run_single_mode(cat_dict)
 
 
 if __name__ == "__main__":
