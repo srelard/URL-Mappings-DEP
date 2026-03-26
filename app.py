@@ -296,17 +296,46 @@ async def _check_one(
             return (url, -1, str(e)[:80])
 
 
+async def _authenticate_dep(session: aiohttp.ClientSession, urls: list[str]):
+    """Hit the DEP auth endpoint for each unique country/lang to get session cookies.
+    Must be called before checking DEP URLs."""
+    seen = set()
+    for url in urls:
+        p = url.lower().find(NEW_BASE_DOMAIN.lower())
+        if p < 0:
+            continue
+        after = url[len(NEW_BASE_DOMAIN) + 1:]  # skip domain + /
+        parts = after.split("/")
+        if len(parts) >= 2:
+            country = parts[0]
+            lang = remove_html_ext(parts[1])
+            key = f"{country}/{lang}"
+            if key in seen:
+                continue
+            seen.add(key)
+            auth_url = f"{NEW_BASE_DOMAIN}/{country}/{lang}/please-log-me-in/editor_access"
+            try:
+                async with session.get(auth_url, allow_redirects=True, timeout=HTTP_TIMEOUT) as resp:
+                    pass  # Cookie is now stored in session jar
+            except Exception:
+                pass
+
+
 async def _check_all(
     urls: list[str],
     follow_redirects: bool,
+    auth_dep: bool = False,
 ) -> dict[str, tuple[int, str]]:
-    """Check all URLs async with concurrency limit. Returns {url: (code, err)}."""
+    """Check all URLs async with concurrency limit. Returns {url: (code, err)}.
+    If auth_dep=True, authenticates against DEP first to get session cookies."""
     sem = asyncio.Semaphore(HTTP_CONCURRENCY)
     connector = aiohttp.TCPConnector(limit=HTTP_CONCURRENCY, ssl=False)
     async with aiohttp.ClientSession(
         connector=connector,
         headers={"User-Agent": "Mozilla/5.0 (URL-Mapping-Tool/1.0)"},
     ) as session:
+        if auth_dep:
+            await _authenticate_dep(session, urls)
         tasks = [_check_one(session, u, sem, follow_redirects) for u in urls]
         results: dict[str, tuple[int, str]] = {}
         for coro in asyncio.as_completed(tasks):
@@ -316,30 +345,42 @@ async def _check_all(
 
 
 def run_checks(
-    urls: list[str], follow_redirects: bool, progress_bar=None
+    urls: list[str], follow_redirects: bool, progress_bar=None, auth_dep: bool = False
 ) -> dict[str, tuple[int, str]]:
     """Sync wrapper for async HTTP checks. Processes in batches for
-    thread-safe progress bar updates."""
+    thread-safe progress bar updates. If auth_dep=True, authenticates first."""
     unique_urls = list(dict.fromkeys(urls))
     all_results: dict[str, tuple[int, str]] = {}
     batch_size = 50
     total = len(unique_urls)
 
-    for i in range(0, total, batch_size):
-        batch = unique_urls[i : i + batch_size]
+    if auth_dep:
+        # DEP auth needs cookies to persist across all URLs → single session
         with ThreadPoolExecutor(max_workers=1) as pool:
             future = pool.submit(
                 asyncio.run,
-                _check_all(batch, follow_redirects),
+                _check_all(unique_urls, follow_redirects, auth_dep=True),
             )
-            all_results.update(future.result())
-
+            all_results = future.result()
         if progress_bar:
-            done = min(i + batch_size, total)
-            progress_bar.progress(
-                done / total,
-                text=f"Checked {done}/{total} URLs...",
-            )
+            progress_bar.progress(1.0, text=f"Checked {total}/{total} URLs...")
+    else:
+        # No auth needed → batch for progress updates
+        for i in range(0, total, batch_size):
+            batch = unique_urls[i : i + batch_size]
+            with ThreadPoolExecutor(max_workers=1) as pool:
+                future = pool.submit(
+                    asyncio.run,
+                    _check_all(batch, follow_redirects),
+                )
+                all_results.update(future.result())
+
+            if progress_bar:
+                done = min(i + batch_size, total)
+                progress_bar.progress(
+                    done / total,
+                    text=f"Checked {done}/{total} URLs...",
+                )
 
     return all_results
 
@@ -444,7 +485,7 @@ def run_single_mode(cat_dict: dict[str, str]):
         )
         bar.progress(0.5, text="Checking DEP URLs...")
         st.session_state["dep_statuses"] = run_checks(
-            new_urls, follow_redirects=False, progress_bar=bar
+            new_urls, follow_redirects=False, progress_bar=bar, auth_dep=True
         )
         bar.progress(1.0, text="All checks complete!")
         for key in ("ow_errors_xlsx", "dep_errors_xlsx", "mapping_xlsx"):
@@ -667,7 +708,7 @@ def run_batch_mode(cat_dict: dict[str, str]):
                 text=f"Checking {cl.upper()} ({i+1}/{total_countries})...",
             )
             ow_statuses = run_checks(data["old_urls"], follow_redirects=True)
-            dep_statuses = run_checks(data["new_urls"], follow_redirects=False)
+            dep_statuses = run_checks(data["new_urls"], follow_redirects=False, auth_dep=True)
 
             # Collect OW errors
             for url in data["old_urls"]:
