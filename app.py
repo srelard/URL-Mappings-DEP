@@ -557,31 +557,52 @@ def run_single_mode(cat_dict: dict[str, str]):
         if error_rows:
             st.divider()
             st.subheader(f"Fix {len(error_rows)} DEP 404 Errors")
-            st.caption("Edit the 'New DEP URL' column, then click Apply.")
 
-            error_df = pd.DataFrame(error_rows)
-            edited_df = st.data_editor(
-                error_df[["OW URL", "DEP URL (404)", "New DEP URL"]],
-                column_config={
-                    "OW URL": st.column_config.TextColumn(disabled=True, width="large"),
-                    "DEP URL (404)": st.column_config.TextColumn(disabled=True, width="large"),
-                    "New DEP URL": st.column_config.TextColumn(width="large"),
-                },
-                use_container_width=True,
-                num_rows="fixed",
-                key="dep_404_editor",
-            )
-
-            if st.button("Apply Fixes", type="primary"):
+            # Quick-fix: all 404s → homepage
+            if st.button("Quick-Fix: All 404s → Homepage", type="primary"):
                 updated_urls = list(new_urls)
-                for i, row in enumerate(error_rows):
-                    new_val = edited_df.iloc[i]["New DEP URL"]
-                    if new_val and new_val != row["DEP URL (404)"]:
-                        updated_urls[row["index"]] = new_val
+                for row in error_rows:
+                    dep_url = row["DEP URL (404)"]
+                    # Extract country/lang from DEP URL
+                    after_domain = dep_url[len(NEW_BASE_DOMAIN) + 1:]  # skip domain + /
+                    parts = after_domain.split("/")
+                    if len(parts) >= 2:
+                        country = parts[0]
+                        lang = remove_html_ext(parts[1])
+                        homepage = f"{NEW_BASE_DOMAIN}/{country}/{lang}.html"
+                    else:
+                        homepage = f"{NEW_BASE_DOMAIN}.html"
+                    updated_urls[row["index"]] = homepage
                 st.session_state["new_urls"] = updated_urls
                 for key in ("dep_statuses", "dep_errors_xlsx", "mapping_xlsx"):
                     st.session_state.pop(key, None)
                 st.rerun()
+
+            # Manual editor
+            with st.expander("Or edit manually", expanded=False):
+                error_df = pd.DataFrame(error_rows)
+                edited_df = st.data_editor(
+                    error_df[["OW URL", "DEP URL (404)", "New DEP URL"]],
+                    column_config={
+                        "OW URL": st.column_config.TextColumn(disabled=True, width="large"),
+                        "DEP URL (404)": st.column_config.TextColumn(disabled=True, width="large"),
+                        "New DEP URL": st.column_config.TextColumn(width="large"),
+                    },
+                    use_container_width=True,
+                    num_rows="fixed",
+                    key="dep_404_editor",
+                )
+
+                if st.button("Apply Manual Fixes"):
+                    updated_urls = list(new_urls)
+                    for i, row in enumerate(error_rows):
+                        new_val = edited_df.iloc[i]["New DEP URL"]
+                        if new_val and new_val != row["DEP URL (404)"]:
+                            updated_urls[row["index"]] = new_val
+                    st.session_state["new_urls"] = updated_urls
+                    for key in ("dep_statuses", "dep_errors_xlsx", "mapping_xlsx"):
+                        st.session_state.pop(key, None)
+                    st.rerun()
 
     # --- Downloads ---
     st.divider()
