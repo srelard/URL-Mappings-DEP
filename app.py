@@ -202,21 +202,22 @@ def build_new_url(old_url: str, cat_dict: dict[str, str]) -> str:
     if not section:
         return f"{base}.html"
 
-    # Section routing — supports EN, FR, TR localized URL segments
-    if contains_any(section, "applications"):
-        return f"{base}/applications.html"
-    elif contains_any(section, "industries", "sektör"):
-        return f"{base}/industries.html"
-    elif contains_any(section, "insights", "spotlights", "actualite", "gundem"):
-        return f"{base}/knowledge.html"
-    elif contains_any(section, "search", "recherche", "arama"):
-        return prod_generic
-    elif contains_any(section, "services", "hizmet"):
-        return f"{base}/support.html"
-    elif contains_any(section, "about", "propos", "hakkinda"):
-        return f"{base}.html"
-    elif contains_any(section, "product", "produit", "urunle"):
+    # Section routing — supports EN, FR, TR, ES, PT localized URL segments
+    # Products: EN product/products, FR produit/produits, TR urunle*, ES producto/productos, PT produto/produtos
+    if contains_any(section, "product", "produit", "urunle", "producto", "produto"):
         return build_product_url(parts, base, prod_generic, cat_dict)
+    elif contains_any(section, "applications"):
+        return f"{base}/applications.html"
+    elif contains_any(section, "industries", "sektör", "setores"):
+        return f"{base}/industries.html"
+    elif contains_any(section, "insights", "spotlights", "actualite", "gundem", "novidades"):
+        return f"{base}/knowledge.html"
+    elif contains_any(section, "search", "recherche", "arama", "busqueda", "búsqueda", "procurar"):
+        return prod_generic
+    elif contains_any(section, "services", "hizmet", "servicios", "servi"):
+        return f"{base}/support.html"
+    elif contains_any(section, "about", "propos", "hakkinda", "compa", "sobre"):
+        return f"{base}.html"
     else:
         return f"{base}.html"
 
