@@ -556,8 +556,14 @@ def run_single_mode(cat_dict: dict[str, str]):
                 })
 
         if error_rows:
+            unique_404_urls = len({row["DEP URL (404)"] for row in error_rows})
             st.divider()
-            st.subheader(f"Fix {len(error_rows)} DEP 404 Errors")
+            st.subheader(f"Fix {len(error_rows)} mappings ({unique_404_urls} unique DEP 404 URLs)")
+            st.caption(
+                f"{unique_404_urls} unique DEP URLs returned 404. "
+                f"Because multiple OW URLs can map to the same DEP URL, "
+                f"this affects {len(error_rows)} rows in the output Excel."
+            )
 
             # Quick-fix: all 404s → homepage
             if st.button("Quick-Fix: All 404s → Homepage", type="primary"):
