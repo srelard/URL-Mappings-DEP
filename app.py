@@ -565,21 +565,25 @@ def run_single_mode(cat_dict: dict[str, str]):
                 f"this affects {len(error_rows)} rows in the output Excel."
             )
 
-            # Quick-fix: all 404s → homepage
-            if st.button("Quick-Fix: All 404s → Homepage", type="primary"):
+            # Quick-fix: products → PLP, others → homepage
+            if st.button("Quick-Fix: Products → PLP, Rest → Homepage", type="primary"):
                 updated_urls = list(new_urls)
                 for row in error_rows:
                     dep_url = row["DEP URL (404)"]
-                    # Extract country/lang from DEP URL
                     after_domain = dep_url[len(NEW_BASE_DOMAIN) + 1:]  # skip domain + /
                     parts = after_domain.split("/")
                     if len(parts) >= 2:
                         country = parts[0]
                         lang = remove_html_ext(parts[1])
-                        homepage = f"{NEW_BASE_DOMAIN}/{country}/{lang}.html"
+                        base = f"{NEW_BASE_DOMAIN}/{country}/{lang}"
                     else:
-                        homepage = f"{NEW_BASE_DOMAIN}.html"
-                    updated_urls[row["index"]] = homepage
+                        base = NEW_BASE_DOMAIN
+
+                    if "/products.html/" in dep_url:
+                        target = f"{base}/products.html/producttype_industrial-root-producttype.html"
+                    else:
+                        target = f"{base}.html"
+                    updated_urls[row["index"]] = target
                 st.session_state["new_urls"] = updated_urls
                 for key in ("dep_statuses", "dep_errors_xlsx", "mapping_xlsx"):
                     st.session_state.pop(key, None)
