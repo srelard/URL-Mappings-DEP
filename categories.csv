@@ -247,3 +247,95 @@ Syringe consumables / supplies,Level 3,2.3.5.4.6.7.3,syringeconsumables/supplies
 Automated robotic systems,Level 2,2.3.5.4.6.8,automatedroboticsystems
 Robot parts and accessories,Level 3,2.3.5.4.6.8.5,robotpartsandaccessories
 Robot systems,Level 3,2.3.5.4.6.8.6,robotsystems
+Equipment,Level 1 (ES),2.3.5.4.6,equipos
+Industrial adhesives,Level 1 (ES),2.3.5.4.1,adhesivosindustriales
+Contact adhesives,Level 2 (ES),2.3.5.4.1.21,adhesivosdecontacto
+Flexible adhesives,Level 2 (ES),2.3.5.4.1.3,adhesivosflexibles
+Light curing adhesives,Level 2 (ES),2.3.5.4.1.15,adhesivosuvadhesivosdecuradoporluz
+Threadlockers,Level 2 (ES),2.3.5.4.1.13,fijadoresderoscas
+Retaining compounds,Level 2 (ES),2.3.5.4.1.9,retención
+Windshield adhesives,Level 2 (ES),2.3.5.4.1.17,adhesivosdelunasparalapostventadeautomocion
+Industrial cleaners,Level 1 (ES),2.3.5.4.2,limpiadores
+Industrial degreasers,Level 2 (ES),2.3.5.4.2.1,desengrasantes
+General industrial cleaners,Level 2 (ES),2.3.5.4.2.4,limpiadoresindustrialesgenerales
+Industrial lubricants,Level 1 (ES),2.3.5.4.7,lubricantesindustriales
+Petroleum based greases,Level 2 (ES),2.3.5.4.7.6,grasasconbasedepetróleo
+Synthetic lubricants,Level 2 (ES),2.3.5.4.7.8,lubricantessintéticos
+Machining lubricants,Level 2 (ES),2.3.5.4.7.4,compuestosparamaquinado
+Forging lubricants,Level 3 (ES),2.3.5.4.7.2.1,fragua
+Industrial repair materials,Level 1 (ES),2.3.5.4.9,materialdereparación
+Repair kits,Level 2 (ES),2.3.5.4.9.7,kitsdereparación
+Metal rebuilding materials,Level 2 (ES),2.3.5.4.9.4,materialdereconstruccióndemetal
+Rubber and belt repair materials,Level 2 (ES),2.3.5.4.9.9,materialdereparacióndebandas
+Concrete repair materials,Level 2 (ES),2.3.5.4.9.1,materialdereparacióndeconcreto
+Machinery repair materials,Level 2 (ES),2.3.5.4.9.3,materialdereparacióndemaquinaria
+Pipe repair materials,Level 2 (ES),2.3.5.4.9.6,materialdereparacióndetuberías
+O-ring repair materials,Level 2 (ES),2.3.5.4.9.5,materialdereparaciónoring
+Solder materials,Level 1 (ES),2.3.5.4.11,materialesdesoldadura
+Industrial coatings,Level 1 (ES),2.3.5.4.3,recubrimientosindustriales
+Mold release agents,Level 2 (ES),2.3.5.4.3.7,desmoldantes
+Corrosion protectors,Level 2 (ES),2.3.5.4.3.14,protectorescontralacorrosión
+Protective coatings,Level 2 (ES),2.3.5.4.3.10,recubrimientosdeprotección
+Wear resistant coatings,Level 2 (ES),2.3.5.4.3.12,recubrimientosresistentescontraeldesgaste
+Industrial sealants,Level 1 (ES),2.3.5.4.10,selladoresindustriales
+Thread sealants,Level 2 (ES),2.3.5.4.10.7,selladoresderoscas
+Mold release sealants,Level 2 (ES),2.3.5.4.10.4,selladoresdesmoldantes
+Specialty sealants,Level 2 (ES),2.3.5.4.10.10,selladoresespecializados
+Flexible sealants,Level 2 (ES),2.3.5.4.10.1,selladoresflexibles
+Light curing sealants,Level 2 (ES),2.3.5.4.10.8,selladoresuvselladoresdecuradoporluz
+Liquid gaskets,Level 2 (ES),2.3.5.4.10.11,solucionesjuntasliquidas
+Industrial adhesives,Level 1 (PT),2.3.5.4.1,adesivosindustriais
+Pressure sensitive adhesives,Level 2 (PT),2.3.5.4.1.7,adesivosensívelàpressão
+Solvent based adhesives,Level 2 (PT),2.3.5.4.1.10,adesivosdebasesolvente
+Contact adhesives,Level 2 (PT),2.3.5.4.1.21,adesivosdecontato
+Laminating adhesives,Level 2 (PT),2.3.5.4.1.18,adesivosdelaminação
+Windshield adhesives,Level 2 (PT),2.3.5.4.1.17,adesivosdeparabrisaparaomercadodereparosautomotivos
+Structural adhesives,Level 2 (PT),2.3.5.4.1.11,adesivosestruturais
+Flexible adhesives,Level 2 (PT),2.3.5.4.1.3,adesivosflexíveis
+Instant adhesives,Level 2 (PT),2.3.5.4.1.5,adesivosinstantâneos
+Hot melt adhesives,Level 2 (PT),2.3.5.4.1.4,adesivostermofusíveis
+Light curing adhesives,Level 2 (PT),2.3.5.4.1.15,adesivosuvadesivosdecurapelaluz
+Water based adhesives,Level 2 (PT),2.3.5.4.1.16,adesivosàbasedeágua
+Threadlockers,Level 2 (PT),2.3.5.4.1.13,fixadoresderoscas
+Retaining compounds,Level 2 (PT),2.3.5.4.1.9,retentores
+Threadlockers,Level 2 (PT),2.3.5.4.1.13,threadlockers_msm_moved
+Pre-applied adhesives,Level 2 (PT),2.3.5.4.1.8,preappliedadhesivessealants
+Industrial lubricants,Level 1 (PT),2.3.5.4.7,lubrificantesindustriais
+Anti-seize lubricants,Level 2 (PT),2.3.5.4.7.1,compostosantiaderentes
+Metalworking fluids,Level 2 (PT),2.3.5.4.7.5,fluidosparametalurgia
+Forging lubricants,Level 3 (PT),2.3.5.4.7.2.1,forjaria
+Petroleum based greases,Level 2 (PT),2.3.5.4.7.6,graxasàbasedepetróleo
+Synthetic lubricants,Level 2 (PT),2.3.5.4.7.8,lubrificantessintéticos
+Specialty oils and lubricants,Level 2 (PT),2.3.5.4.7.7,oleoselubrificantesespeciais
+Industrial repair materials,Level 1 (PT),2.3.5.4.9,materialdereparação
+Repair kits,Level 2 (PT),2.3.5.4.9.7,kitsdereparação
+Metal rebuilding materials,Level 2 (PT),2.3.5.4.9.4,materialdereconstruçãodemetal
+Rubber and belt repair materials,Level 2 (PT),2.3.5.4.9.9,materialdereparaçãodeborrachaecorreias
+Concrete repair materials,Level 2 (PT),2.3.5.4.9.1,materialdereparaçãodeconcreto
+Machinery repair materials,Level 2 (PT),2.3.5.4.9.3,materialdereparaçãodemaquinaria
+Pipe repair materials,Level 2 (PT),2.3.5.4.9.6,materialdereparaçãodetubulação
+O-ring repair materials,Level 2 (PT),2.3.5.4.9.5,materialreparaçãoorings
+Activators for repair materials,Level 2 (PT),2.3.5.4.9.10,ativadoresaditivosparamaterialdereparações
+Composite assembly materials,Level 1 (PT),2.3.5.4.4,montagemdecompostos
+Industrial coatings,Level 1 (PT),2.3.5.4.3,revestimentosindustriais
+Sound dampers,Level 2 (PT),2.3.5.4.3.15,amortecedoresderuído
+Dispersion coatings,Level 2 (PT),2.3.5.4.3.3,revestimentosdedispersão
+Protective coatings,Level 2 (PT),2.3.5.4.3.10,revestimentosdeproteção
+Wear resistant coatings,Level 2 (PT),2.3.5.4.3.12,revestimentosresistentesaodesgaste
+Surface treatments,Level 1 (PT),2.3.5.4.12,tratamentosdesuperfícies
+Polishing compounds,Level 2 (PT),2.3.5.4.12.8,compostosdepolimento
+Industrial pretreatment conditioners,Level 2 (PT),2.3.5.4.12.4,condicionadoresdeprétratamento
+Corrosion inhibitors,Level 2 (PT),2.3.5.4.12.6,inibidoresdacorrosão
+Surface post treatments,Level 2 (PT),2.3.5.4.12.5,póstratamentos
+Industrial sealants,Level 1 (PT),2.3.5.4.10,vedantesindustriais
+Liquid gaskets,Level 2 (PT),2.3.5.4.10.11,solucoesjuntasliquidas
+Floor sealants,Level 2 (PT),2.3.5.4.10.2,vedantesdepisoserevestimentos
+Porosity sealants,Level 2 (PT),2.3.5.4.10.5,vedantesdeporosidade
+Thread sealants,Level 2 (PT),2.3.5.4.10.7,vedantesderoscas
+NVH sealants,Level 2 (PT),2.3.5.4.10.9,vedantesderuídovibraçãoedureza
+Mold release sealants,Level 2 (PT),2.3.5.4.10.4,vedantesdesmoldantes
+Specialty sealants,Level 2 (PT),2.3.5.4.10.10,vedantesespecializados
+Flexible sealants,Level 2 (PT),2.3.5.4.10.1,vedantesflexíveis
+Light curing sealants,Level 2 (PT),2.3.5.4.10.8,vedantesuv
+Grout materials,Level 2 (PT),2.3.5.4.9.2,materialdecompactação
+Industrial cleaners for surface treatments,Level 2 (PT),2.3.5.4.2.10,limpadoresprétratamento
