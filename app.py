@@ -846,30 +846,10 @@ def run_batch_mode(cat_dict: dict[str, str]):
 # =========================================================
 # Main
 # =========================================================
-def check_password() -> bool:
-    """Simple password gate. Password is stored in Streamlit secrets."""
-    if st.session_state.get("authenticated"):
-        return True
-
-    password = st.text_input("Password", type="password", placeholder="Enter password to continue")
-    if not password:
-        return False
-
-    if password == st.secrets.get("password", "henkel2026"):
-        st.session_state["authenticated"] = True
-        st.rerun()
-    else:
-        st.error("Incorrect password")
-    return False
-
-
 def main():
     st.set_page_config(page_title="URL Redirect Mapping Tool", layout="wide")
     st.title("URL Redirect Mapping Tool")
     st.caption("Henkel Adhesives Technologies — OneWeb to DEP URL Migration")
-
-    if not check_password():
-        return
 
     st.markdown("""
 **Purpose:** Automatically maps old OneWeb (OW) URLs to new Digital Experience Platform (DEP) URLs
